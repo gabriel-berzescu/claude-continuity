@@ -28,7 +28,7 @@ At the prompt of a Claude Code terminal session:
 /plugin install continuity --marketplace gabriel-berzescu/claude-continuity
 ```
 
-Answer `y` to add the marketplace, then pick a scope (user, so it runs in every session). From a shell, use `claude plugin install continuity --marketplace gabriel-berzescu/claude-continuity`. The repository is private for now, so installing needs read access to it on GitHub and a git credential for github.com on the machine.
+Answer `y` to add the marketplace, then pick a scope (user, so it runs in every session). From a shell, use `claude plugin install continuity --marketplace gabriel-berzescu/claude-continuity`. In the desktop app, where `/plugin` does not run, click + next to the prompt box, then Plugins, Add marketplace with `gabriel-berzescu/claude-continuity`, then Add plugin.
 
 While developing, load it from a working copy instead: `claude --plugin-dir <path to this folder>`, or name the folder in `CLAUDE_CODE_PLUGIN_DIRS`.
 
