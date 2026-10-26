@@ -1,0 +1,6 @@
+{
+  "name": "continuity",
+  "owner": { "name": "Gabriel Berzescu" },
+  "description": "Continuity for long Claude Code sessions across context compaction.",
+  "plugins": [{ "name": "continuity", "source": "./" }]
+}
