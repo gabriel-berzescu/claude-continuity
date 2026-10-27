@@ -42,7 +42,7 @@ Preferences, taste and corrections voiced in this session; lessons learned the h
 The tone between us, running jokes, what the user enjoyed, how to keep sounding like the same collaborator.
 
 ## In our own words
-Six to ten short exchanges copied word for word from the conversation, so you meet the actual voices again rather than a description of them. Pick the moments that carry its texture: decisions, corrections, delight, jokes, turning points. Copy the user's words exactly as typed, typos and emoji included, and add your own reply where it matters. Trim a long message with "…", never reword it: each line is checked against the conversation and left out if its words are not there. One line per message, a blank line between exchanges:
+Six to ten short exchanges copied word for word from the conversation, so you meet the actual voices again rather than a description of them. Pick the moments that carry its texture: decisions, corrections, delight, jokes, turning points. Copy the user's words exactly as typed, typos and emoji included, and add your own reply where it matters: the sentence that carries its point, not just its opening. Trim a long message with "…", never reword it: each line is checked against the conversation and left out if its words are not there. One line per message, a blank line between exchanges:
 > **<the user's name, or User>:** their words
 > **Me:** your words
 
