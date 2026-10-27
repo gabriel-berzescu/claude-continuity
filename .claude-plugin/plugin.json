@@ -1,6 +1,6 @@
 {
   "name": "continuity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": { "name": "Gabriel Berzescu" },
   "license": "MIT",
   "description": "Keeps a long session's continuity across context compaction: Claude writes a handoff with the whole conversation in view, and it comes back right after the summary."

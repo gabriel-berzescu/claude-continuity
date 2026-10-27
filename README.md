@@ -10,13 +10,14 @@ When a conversation fills the context window, Claude Code compacts it: everythin
    - open threads;
    - how the user works;
    - the feel of it;
+   - in our own words: six to ten short exchanges copied word for word, because the actual lines carry a texture that no description of them does;
    - where to look.
 
-   Each note is saved under `~/.claude/continuity/<session id>/`.
+   Each quoted line is checked against the conversation: one found there is kept with the conversation's own characters (case, punctuation, typos), one that isn't is left out, and a closing line says how many were found. Each note is saved under `~/.claude/continuity/<session id>/`.
 2. **Standing instructions for the summariser**, for automatic compactions too: keep decisions with their reasons, the options rejected, every open thread and the current state. They come after anything typed after `/compact`.
 3. **The note comes back right after the summary**, as Claude's own message. It carries the path of the session's full transcript, which keeps everything from before the compaction, so details can be looked up there.
 
-`/handoff` writes a note on demand, without compacting: a checkpoint you can read.
+`/handoff` writes a note on demand, without compacting: a checkpoint you can read. It says how many quoted lines were found word for word.
 
 If anything fails (there is nothing to fork yet, the model doesn't answer, an error), the compaction is Claude Code's own, as if the plugin weren't there. A subagent's own compactions pass through untouched.
 
@@ -41,7 +42,7 @@ It is a hooks module (a "mod"), built on Claude Code's early-access function-hoo
 
 ## What it costs
 
-At each compaction, one extra model request over the transcript (mostly read from the prompt cache) and a note of about 1,500 words. `/handoff` costs the same.
+At each compaction, one extra model request over the transcript (mostly read from the prompt cache) and a note of about 1,800 words. Checking the quotes takes a few tens of milliseconds, even over a long session. `/handoff` costs the same.
 
 ## Develop
 

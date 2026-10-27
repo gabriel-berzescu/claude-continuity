@@ -14,7 +14,7 @@ const CHAT: SessionMessage[] = [
 // (the engine hands hooks native paths: compare them with forward slashes)
 const slashes = (p: string) => p.replace(/\\/g, '/')
 
-function engine(on: On, fork: 'answers' | 'nothing-to-fork') {
+function engine(on: On, fork: 'answers' | 'nothing-to-fork', note = NOTE) {
   const writes: { path: string; text: string }[] = []
   const compactions: { instructions?: string }[] = []
   on('session.id', () => ({ value: 'sess-1' }))
@@ -32,15 +32,54 @@ function engine(on: On, fork: 'answers' | 'nothing-to-fork') {
   on('model.fork', () => ({
     value:
       fork === 'answers'
-        ? { isAnswered: true, text: NOTE, usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } }
+        ? { isAnswered: true, text: note, usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 } }
         : { isAnswered: false, reason: 'nothing-to-fork' },
   }))
   on('session.compact', (_, e) => {
     compactions.push({ instructions: e.instructions })
     return { messages: [SUMMARY] }
   })
+  on('session.messages', () => ({ value: CHAT }))
   return { writes, compactions }
 }
+
+// A note whose quotes are right but for case and curly quotes, trimmed with "…", or made up.
+const WORDS_NOTE = `## Where we are
+Planning a picnic.
+
+## In our own words
+> **Sam:** “Plan a picnic: the lake, not the park”
+> **Me:** the lake it is.
+
+> **Sam:** ok lets go with sandwiches … and lemonade :)
+> **Me:** Sandwiches are a fine choice!
+
+## Where to look
+- "reseeded"`
+
+const WORDS_CHAT: SessionMessage[] = [...CHAT, { role: 'user', text: 'ok lets go with sandwiches... and lemonade :)', toolUses: [] }, { role: 'assistant', text: 'Sandwiches and lemonade, done.', toolUses: [] }]
+
+test('the quoted exchanges are checked against the conversation: kept in its own words, or left out', async ($, on) => {
+  engine(on, 'answers', WORDS_NOTE)
+
+  const result = await $.session.compact({ trigger: 'auto', messages: WORDS_CHAT })
+
+  const note = result.messages?.[1]?.text ?? ''
+  expect(note).toContain('## In our own words\n> **Sam:** Plan a picnic: the lake, not the park\n> **Me:** The lake it is.\n\n> **Sam:** ok lets go with sandwiches... and lemonade :)\n\n*3 of 4 quoted lines found word for word in the conversation; the other was left out.*\n\n## Where to look\n- "reseeded"')
+  expect(note).not.toContain('fine choice')
+})
+
+test('/handoff checks the quotes against the session’s own messages', async ($, on) => {
+  const { writes } = engine(on, 'answers', WORDS_NOTE)
+
+  const { text } = await $.command.run({ command: 'handoff', args: '', origin: { kind: 'composer' }, presentation: { isFullscreen: false, columns: 120 } })
+
+  expect(text).toContain('Handoff note written:')
+  expect(text).toContain('(2 of 4 quoted lines found word for word)')
+  const latest = writes.find((w) => slashes(w.path).endsWith('/latest.md'))?.text ?? ''
+  expect(latest).toContain('> **Me:** The lake it is.')
+  expect(latest).not.toContain('sandwiches')
+})
 
 test('a compaction keeps the handoff note right after the summary, as Claude speaking', async ($, on) => {
   const { writes, compactions } = engine(on, 'answers')
